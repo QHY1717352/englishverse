@@ -405,14 +405,18 @@ function VocabQuizStage({
   }, [current, pairs]);
 
   const [picked, setPicked] = useState<string | null>(null);
+  const [pickedOk, setPickedOk] = useState(false);
 
-  useEffect(() => setPicked(null), [index]);
+  useEffect(() => {
+    setPicked(null);
+    setPickedOk(false);
+  }, [index]);
 
   const pick = (opt: string) => {
     if (picked) return;
-    setPicked(opt);
     const ok = opt === current.meaning;
-    setTimeout(() => onAnswer(ok), 700);
+    setPicked(opt);
+    setPickedOk(ok);
   };
 
   return (
@@ -423,6 +427,14 @@ function VocabQuizStage({
       <div className="card p-6 text-center">
         <div className="text-xs text-ink-600">选择正确的释义</div>
         <div className="text-3xl font-extrabold text-ink-900 mt-2">{current.term}</div>
+        {picked && (
+          <div className={classnames(
+            'text-xs mt-2 font-medium',
+            pickedOk ? 'text-emerald-600' : 'text-rose-600',
+          )}>
+            {pickedOk ? '✓ 答对了！' : `✕ 答错了，正确释义：${current.meaning}`}
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-1 gap-2 mt-4">
         {options.map((opt) => {
@@ -448,6 +460,11 @@ function VocabQuizStage({
           );
         })}
       </div>
+      {picked && (
+        <button onClick={() => onAnswer(pickedOk)} className="btn-primary mt-5 w-full">
+          {index + 1 < pairs.length ? '下一题 →' : '查看成绩'}
+        </button>
+      )}
     </div>
   );
 }
@@ -513,10 +530,18 @@ function GrammarQuizStage({
   }, [blank]);
 
   const [picked, setPicked] = useState<string | null>(null);
+  const [pickedOk, setPickedOk] = useState(false);
+
+  useEffect(() => {
+    setPicked(null);
+    setPickedOk(false);
+  }, [blank]);
+
   const pick = (opt: string) => {
     if (picked) return;
+    const ok = opt === blank.answer;
     setPicked(opt);
-    setTimeout(() => onAnswer(opt === blank.answer), 700);
+    setPickedOk(ok);
   };
 
   return (
@@ -526,6 +551,14 @@ function GrammarQuizStage({
         <div className="text-xs text-ink-600">含义：{point.meaning}</div>
         <div className="text-xl font-bold text-ink-900 mt-2 leading-relaxed">{blank.blanked}</div>
         <div className="text-sm text-ink-600 mt-1">{point.exampleMeaning}</div>
+        {picked && !pickedOk && (
+          <div className="text-xs mt-2 font-medium text-rose-600">
+            ✕ 正确答案：{blank.answer}
+          </div>
+        )}
+        {picked && pickedOk && (
+          <div className="text-xs mt-2 font-medium text-emerald-600">✓ 答对了！</div>
+        )}
       </div>
       <div className="grid grid-cols-2 gap-2 mt-4">
         {options.map((opt) => {
@@ -549,6 +582,11 @@ function GrammarQuizStage({
           );
         })}
       </div>
+      {picked && (
+        <button onClick={() => onAnswer(pickedOk)} className="btn-primary mt-5 w-full">
+          下一题 →
+        </button>
+      )}
     </div>
   );
 }
@@ -670,10 +708,12 @@ function ListeningStage({
   const [speaking, setSpeaking] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [picked, setPicked] = useState<boolean | null>(null);
+  const [pickedOk, setPickedOk] = useState(false);
 
   useEffect(() => {
     setRevealed(false);
     setPicked(null);
+    setPickedOk(false);
   }, [clip]);
 
   // 生成一个判断题：例句翻译是否正确（用 clip.translation 与扰动版本）
@@ -700,7 +740,7 @@ function ListeningStage({
   const pick = (val: boolean) => {
     if (picked !== null) return;
     setPicked(val);
-    setTimeout(() => onAnswer(val === question.answer), 800);
+    setPickedOk(val === question.answer);
   };
 
   return (
@@ -717,17 +757,25 @@ function ListeningStage({
             {speaking ? '播放中…' : '▶ 播放'}
           </button>
         </div>
-        {revealed && (
+        {(revealed || picked !== null) && (
           <div className="mt-4 p-3 rounded-xl bg-emerald-50 text-left animate-pop">
-            <div className="text-xs text-emerald-700 mb-1">原文</div>
+            <div className="text-xs text-emerald-700 mb-1">📖 原文对照</div>
             <div className="text-sm text-ink-900 font-medium">{clip.transcript}</div>
             <div className="text-xs text-ink-600 mt-1">{clip.translation}</div>
           </div>
         )}
-        {!revealed && (
+        {!revealed && picked === null && (
           <button onClick={() => setRevealed(true)} className="text-xs text-ink-600 hover:text-brand-600 mt-3">
             看一眼原文 👀
           </button>
+        )}
+        {picked !== null && (
+          <div className={classnames(
+            'text-xs mt-3 font-medium',
+            pickedOk ? 'text-emerald-600' : 'text-rose-600',
+          )}>
+            {pickedOk ? '✓ 判断正确！' : `✕ 判断错误，正确答案：${question.answer ? '正确' : '错误'}`}
+          </div>
         )}
       </div>
 
@@ -763,6 +811,11 @@ function ListeningStage({
           </button>
         </div>
       </div>
+      {picked !== null && (
+        <button onClick={() => onAnswer(pickedOk)} className="btn-primary mt-5 w-full">
+          {index + 1 < total ? '下一题 →' : '查看成绩'}
+        </button>
+      )}
     </div>
   );
 }
