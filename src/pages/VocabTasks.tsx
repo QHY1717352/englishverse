@@ -372,14 +372,17 @@ function QuizStage({
 }) {
   const options = useMemo(() => makeOptions(word, pool), [word, pool]);
   const [picked, setPicked] = useState<string | null>(null);
+  const [pickedOk, setPickedOk] = useState(false);
 
-  useEffect(() => setPicked(null), [word.term]);
+  useEffect(() => {
+    setPicked(null);
+    setPickedOk(false);
+  }, [word.term]);
 
   const pick = (opt: string) => {
     if (picked) return;
     setPicked(opt);
-    const ok = opt === word.meaning;
-    setTimeout(() => onAnswer(ok), 700);
+    setPickedOk(opt === word.meaning);
   };
 
   return (
@@ -422,6 +425,11 @@ function QuizStage({
           <div className="text-sm font-medium text-ink-900 italic">"{word.example}"</div>
           <div className="text-xs text-ink-600 mt-1">{word.exampleMeaning}</div>
         </div>
+      )}
+      {picked && (
+        <button onClick={() => onAnswer(pickedOk)} className="btn-primary mt-5 w-full">
+          {index + 1 < total ? '下一个单词 →' : '完成本轮'}
+        </button>
       )}
     </div>
   );
