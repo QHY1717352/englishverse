@@ -1,9 +1,9 @@
 /**
  * 英语词汇库
- * - 高中核心词汇（约 4000 词的精选分组，覆盖高频）
- * - 大学英语四级（CET4）核心词汇
+ * - 高中核心词汇（覆盖高考高频词，按主题分组）
+ * - 大学英语四级（CET4）核心词汇（按主题分组）
  * 每词含：音标、词性、释义、例句、例句翻译
- * 词汇按主题分组，供课程动态生成单元与课时。
+ * 供课程动态生成单元与课时，以及「单词任务」模式按 20 词一轮学习。
  */
 
 export interface VocabEntry {
@@ -41,6 +41,14 @@ export const SENIOR_VOCAB: VocabGroup[] = [
       { term: 'prepare', phonetic: '/prɪˈper/', pos: 'v.', meaning: '准备', example: 'I need to prepare for the exam.', exampleMeaning: '我需要为考试做准备。' },
       { term: 'realize', phonetic: '/ˈriːəlaɪz/', pos: 'v.', meaning: '意识到，实现', example: 'He realized his mistake too late.', exampleMeaning: '他意识到自己的错误时为时已晚。' },
       { term: 'successful', phonetic: '/səkˈsesfl/', pos: 'adj.', meaning: '成功的', example: 'She is a successful businesswoman.', exampleMeaning: '她是一位成功的女商人。' },
+      { term: 'routine', phonetic: '/ruːˈtiːn/', pos: 'n.', meaning: '日常，常规', example: 'Exercise is part of my daily routine.', exampleMeaning: '锻炼是我日常生活的一部分。' },
+      { term: 'habit', phonetic: '/ˈhæbɪt/', pos: 'n.', meaning: '习惯', example: 'Reading is a good habit.', exampleMeaning: '阅读是个好习惯。' },
+      { term: ' chore', phonetic: '/tʃɔːr/', pos: 'n.', meaning: '家务杂事', example: 'Doing chores takes up my weekend.', exampleMeaning: '做家务占用了我整个周末。' },
+      { term: 'purchase', phonetic: '/ˈpɜːrtʃəs/', pos: 'v./n.', meaning: '购买', example: 'I purchased a new phone online.', exampleMeaning: '我在网上买了一部新手机。' },
+      { term: 'afford', phonetic: '/əˈfɔːrd/', pos: 'v.', meaning: '买得起，负担得起', example: 'I cannot afford a new car.', exampleMeaning: '我买不起新车。' },
+      { term: 'budget', phonetic: '/ˈbʌdʒɪt/', pos: 'n./v.', meaning: '预算', example: 'We must stick to our budget.', exampleMeaning: '我们必须遵守预算。' },
+      { term: 'convenient', phonetic: '/kənˈviːniənt/', pos: 'adj.', meaning: '方便的', example: 'It is convenient to shop online.', exampleMeaning: '网购很方便。' },
+      { term: 'deliver', phonetic: '/dɪˈlɪvər/', pos: 'v.', meaning: '递送，交付', example: 'The package will be delivered tomorrow.', exampleMeaning: '包裹明天送达。' },
     ],
   },
   {
@@ -50,7 +58,7 @@ export const SENIOR_VOCAB: VocabGroup[] = [
     words: [
       { term: 'anxious', phonetic: '/ˈæŋkʃəs/', pos: 'adj.', meaning: '焦虑的，渴望的', example: 'She felt anxious about the interview.', exampleMeaning: '她对面试感到焦虑。' },
       { term: 'confident', phonetic: '/ˈkɑːnfɪdənt/', pos: 'adj.', meaning: '自信的', example: 'He is confident about passing the test.', exampleMeaning: '他对通过考试很有信心。' },
-      { term: 'disappoint', phonetic: '/ˌdɪsəˈpɔɪnt/', pos: 'v.', meaning: '使失望', example: 'Don\'t disappoint your parents.', exampleMeaning: '不要让你的父母失望。' },
+      { term: 'disappoint', phonetic: '/ˌdɪsəˈpɔɪnt/', pos: 'v.', meaning: '使失望', example: "Don't disappoint your parents.", exampleMeaning: '不要让你的父母失望。' },
       { term: 'eager', phonetic: '/ˈiːɡər/', pos: 'adj.', meaning: '渴望的，急切的', example: 'The students were eager to learn.', exampleMeaning: '学生们渴望学习。' },
       { term: 'embarrass', phonetic: '/ɪmˈbærəs/', pos: 'v.', meaning: '使尴尬', example: 'His joke embarrassed everyone.', exampleMeaning: '他的玩笑让所有人尴尬。' },
       { term: 'grateful', phonetic: '/ˈɡreɪtfl/', pos: 'adj.', meaning: '感激的', example: 'I am grateful for your help.', exampleMeaning: '我很感激你的帮助。' },
@@ -58,6 +66,16 @@ export const SENIOR_VOCAB: VocabGroup[] = [
       { term: 'proud', phonetic: '/praʊd/', pos: 'adj.', meaning: '骄傲的，自豪的', example: 'I am proud of my daughter.', exampleMeaning: '我为女儿感到自豪。' },
       { term: 'regret', phonetic: '/rɪˈɡret/', pos: 'v./n.', meaning: '后悔，遗憾', example: 'I regret not studying harder.', exampleMeaning: '我后悔没有更努力学习。' },
       { term: 'upset', phonetic: '/ʌpˈset/', pos: 'adj.', meaning: '心烦的，难过的', example: 'She was upset by the bad news.', exampleMeaning: '她因坏消息而难过。' },
+      { term: 'delighted', phonetic: '/dɪˈlaɪtɪd/', pos: 'adj.', meaning: '高兴的', example: 'I am delighted to see you.', exampleMeaning: '见到你我很高兴。' },
+      { term: 'frustrated', phonetic: '/ˈfrʌstreɪtɪd/', pos: 'adj.', meaning: '沮丧的', example: 'He felt frustrated by the failure.', exampleMeaning: '他因失败而感到沮丧。' },
+      { term: 'optimistic', phonetic: '/ˌɑːptɪˈmɪstɪk/', pos: 'adj.', meaning: '乐观的', example: 'She is optimistic about the future.', exampleMeaning: '她对未来很乐观。' },
+      { term: 'pessimistic', phonetic: '/ˌpesɪˈmɪstɪk/', pos: 'adj.', meaning: '悲观的', example: "Don't be so pessimistic.", exampleMeaning: '别这么悲观。' },
+      { term: 'sympathy', phonetic: '/ˈsɪmpəθi/', pos: 'n.', meaning: '同情', example: 'I feel sympathy for the poor.', exampleMeaning: '我同情穷人。' },
+      { term: 'enthusiasm', phonetic: '/ɪnˈθuːziæzəm/', pos: 'n.', meaning: '热情', example: 'She has great enthusiasm for music.', exampleMeaning: '她对音乐充满热情。' },
+      { term: 'relief', phonetic: '/rɪˈliːf/', pos: 'n.', meaning: '宽慰，解脱', example: 'It was a relief to hear the good news.', exampleMeaning: '听到这个好消息让人松了口气。' },
+      { term: 'guilty', phonetic: '/ˈɡɪlti/', pos: 'adj.', meaning: '内疚的，有罪的', example: 'I feel guilty about lying.', exampleMeaning: '我为说谎感到内疚。' },
+      { term: 'ashamed', phonetic: '/əˈʃeɪmd/', pos: 'adj.', meaning: '羞愧的', example: 'He was ashamed of his behavior.', exampleMeaning: '他为自己的行为感到羞愧。' },
+      { term: 'content', phonetic: '/kənˈtent/', pos: 'adj.', meaning: '满足的', example: 'She is content with her life.', exampleMeaning: '她对自己的生活很满足。' },
     ],
   },
   {
@@ -66,7 +84,7 @@ export const SENIOR_VOCAB: VocabGroup[] = [
     level: 'senior',
     words: [
       { term: 'assignment', phonetic: '/əˈsaɪnmənt/', pos: 'n.', meaning: '作业，任务', example: 'The assignment is due tomorrow.', exampleMeaning: '作业明天截止。' },
-      { term: 'concentrate', phonetic: '/ˈkɑːnsntreɪt/', pos: 'v.', meaning: '集中，专心', example: 'I can\'t concentrate in a noisy room.', exampleMeaning: '我在吵闹的房间里无法集中注意力。' },
+      { term: 'concentrate', phonetic: '/ˈkɑːnsntreɪt/', pos: 'v.', meaning: '集中，专心', example: "I can't concentrate in a noisy room.", exampleMeaning: '我在吵闹的房间里无法集中注意力。' },
       { term: 'knowledge', phonetic: '/ˈnɑːlɪdʒ/', pos: 'n.', meaning: '知识', example: 'Knowledge is power.', exampleMeaning: '知识就是力量。' },
       { term: 'method', phonetic: '/ˈmeθəd/', pos: 'n.', meaning: '方法', example: 'We need a new teaching method.', exampleMeaning: '我们需要一种新的教学方法。' },
       { term: 'progress', phonetic: '/ˈprɑːɡres/', pos: 'n./v.', meaning: '进步，进展', example: 'You have made great progress.', exampleMeaning: '你取得了很大进步。' },
@@ -75,6 +93,16 @@ export const SENIOR_VOCAB: VocabGroup[] = [
       { term: 'graduate', phonetic: '/ˈɡrædʒueɪt/', pos: 'v./n.', meaning: '毕业，毕业生', example: 'She graduated from Beijing University.', exampleMeaning: '她毕业于北京大学。' },
       { term: 'examine', phonetic: '/ɪɡˈzæmɪn/', pos: 'v.', meaning: '检查，考试', example: 'The doctor examined the patient.', exampleMeaning: '医生检查了病人。' },
       { term: 'educate', phonetic: '/ˈedʒukeɪt/', pos: 'v.', meaning: '教育', example: 'We must educate children about safety.', exampleMeaning: '我们必须教育孩子注意安全。' },
+      { term: 'memorize', phonetic: '/ˈmeməraɪz/', pos: 'v.', meaning: '记忆，背诵', example: 'I need to memorize these words.', exampleMeaning: '我需要记住这些单词。' },
+      { term: 'review', phonetic: '/rɪˈvjuː/', pos: 'v./n.', meaning: '复习，回顾', example: 'I reviewed my notes before the test.', exampleMeaning: '考试前我复习了笔记。' },
+      { term: 'scholarship', phonetic: '/ˈskɑːlərʃɪp/', pos: 'n.', meaning: '奖学金', example: 'She won a scholarship to study abroad.', exampleMeaning: '她获得了出国留学的奖学金。' },
+      { term: 'campus', phonetic: '/ˈkæmpəs/', pos: 'n.', meaning: '校园', example: 'The campus is beautiful in spring.', exampleMeaning: '春天校园很美。' },
+      { term: 'tuition', phonetic: '/tuˈɪʃn/', pos: 'n.', meaning: '学费', example: 'Tuition fees are rising every year.', exampleMeaning: '学费每年都在涨。' },
+      { term: 'course', phonetic: '/kɔːrs/', pos: 'n.', meaning: '课程', example: 'I signed up for an English course.', exampleMeaning: '我报名了一门英语课。' },
+      { term: 'grade', phonetic: '/ɡreɪd/', pos: 'n./v.', meaning: '年级，成绩', example: 'She got good grades this term.', exampleMeaning: '她这学期成绩不错。' },
+      { term: 'degree', phonetic: '/dɪˈɡriː/', pos: 'n.', meaning: '学位，程度', example: 'He holds a master degree.', exampleMeaning: '他拥有硕士学位。' },
+      { term: 'lecture', phonetic: '/ˈlektʃər/', pos: 'n./v.', meaning: '讲座，讲课', example: 'The professor gave a great lecture.', exampleMeaning: '教授的讲座很精彩。' },
+      { term: 'apply', phonetic: '/əˈplaɪ/', pos: 'v.', meaning: '申请，应用', example: 'I will apply for the job.', exampleMeaning: '我要申请这份工作。' },
     ],
   },
   {
@@ -92,6 +120,16 @@ export const SENIOR_VOCAB: VocabGroup[] = [
       { term: 'survive', phonetic: '/sərˈvaɪv/', pos: 'v.', meaning: '幸存，存活', example: 'Only three people survived the crash.', exampleMeaning: '只有三人在坠机中幸存。' },
       { term: 'temperature', phonetic: '/ˈtemprətʃər/', pos: 'n.', meaning: '温度', example: 'The temperature dropped to zero.', exampleMeaning: '气温降到了零度。' },
       { term: 'wildlife', phonetic: '/ˈwaɪldlaɪf/', pos: 'n.', meaning: '野生生物', example: 'We should protect wildlife.', exampleMeaning: '我们应该保护野生生物。' },
+      { term: 'ecology', phonetic: '/ɪˈkɑːlədʒi/', pos: 'n.', meaning: '生态', example: 'Pollution harms the ecology.', exampleMeaning: '污染危害生态。' },
+      { term: 'species', phonetic: '/ˈspiːʃiːz/', pos: 'n.', meaning: '物种', example: 'Many species are in danger.', exampleMeaning: '许多物种濒临灭绝。' },
+      { term: 'organic', phonetic: '/ɔːrˈɡænɪk/', pos: 'adj.', meaning: '有机的', example: 'Organic food is healthier.', exampleMeaning: '有机食品更健康。' },
+      { term: 'recycle', phonetic: '/ˌriːˈsaɪkl/', pos: 'v.', meaning: '回收利用', example: 'We should recycle plastic bottles.', exampleMeaning: '我们应该回收塑料瓶。' },
+      { term: 'reduce', phonetic: '/rɪˈduːs/', pos: 'v.', meaning: '减少', example: 'We must reduce carbon emissions.', exampleMeaning: '我们必须减少碳排放。' },
+      { term: 'renewable', phonetic: '/rɪˈnuːəbl/', pos: 'adj.', meaning: '可再生的', example: 'Solar energy is renewable.', exampleMeaning: '太阳能是可再生能源。' },
+      { term: 'habitat', phonetic: '/ˈhæbɪtæt/', pos: 'n.', meaning: '栖息地', example: 'Forests are the habitat of tigers.', exampleMeaning: '森林是老虎的栖息地。' },
+      { term: 'disaster', phonetic: '/dɪˈzæstər/', pos: 'n.', meaning: '灾难', example: 'The earthquake was a great disaster.', exampleMeaning: '地震是一场巨大的灾难。' },
+      { term: 'flood', phonetic: '/flʌd/', pos: 'n./v.', meaning: '洪水，淹没', example: 'The flood destroyed the village.', exampleMeaning: '洪水冲毁了村庄。' },
+      { term: 'drought', phonetic: '/draʊt/', pos: 'n.', meaning: '干旱', example: 'The drought lasted for months.', exampleMeaning: '干旱持续了数月。' },
     ],
   },
   {
@@ -109,6 +147,43 @@ export const SENIOR_VOCAB: VocabGroup[] = [
       { term: 'respect', phonetic: '/rɪˈspekt/', pos: 'v./n.', meaning: '尊重', example: 'We should respect our parents.', exampleMeaning: '我们应该尊重父母。' },
       { term: 'society', phonetic: '/səˈsaɪəti/', pos: 'n.', meaning: '社会', example: 'Everyone plays a role in society.', exampleMeaning: '每个人在社会中都扮演一个角色。' },
       { term: 'population', phonetic: '/ˌpɑːpjuˈleɪʃn/', pos: 'n.', meaning: '人口', example: 'The population of the city is growing.', exampleMeaning: '这座城市的人口在增长。' },
+      { term: 'community', phonetic: '/kəˈmjuːnəti/', pos: 'n.', meaning: '社区', example: 'Our community is very friendly.', exampleMeaning: '我们的社区很友好。' },
+      { term: 'volunteer', phonetic: '/ˌvɑːlənˈtɪr/', pos: 'n./v.', meaning: '志愿者', example: 'She volunteers at the hospital.', exampleMeaning: '她在医院做志愿者。' },
+      { term: 'religion', phonetic: '/rɪˈlɪdʒən/', pos: 'n.', meaning: '宗教', example: 'Religion plays a role in many cultures.', exampleMeaning: '宗教在许多文化中都有影响。' },
+      { term: 'festival', phonetic: '/ˈfestɪvl/', pos: 'n.', meaning: '节日', example: 'Spring Festival is the most important festival in China.', exampleMeaning: '春节是中国最重要的节日。' },
+      { term: 'heritage', phonetic: '/ˈherɪtɪdʒ/', pos: 'n.', meaning: '遗产', example: 'The Great Wall is a world heritage.', exampleMeaning: '长城是世界遗产。' },
+      { term: 'custom', phonetic: '/ˈkʌstəm/', pos: 'n.', meaning: '习俗', example: 'Each country has its own customs.', exampleMeaning: '每个国家都有自己的习俗。' },
+      { term: 'belief', phonetic: '/bɪˈliːf/', pos: 'n.', meaning: '信念', example: 'Everyone has their own beliefs.', exampleMeaning: '每个人都有自己的信念。' },
+      { term: 'identity', phonetic: '/aɪˈdentəti/', pos: 'n.', meaning: '身份', example: 'Please show your identity card.', exampleMeaning: '请出示你的身份证。' },
+      { term: 'diversity', phonetic: '/daɪˈvɜːrsəti/', pos: 'n.', meaning: '多样性', example: 'Cultural diversity makes the world rich.', exampleMeaning: '文化多样性让世界更丰富。' },
+      { term: 'immigrant', phonetic: '/ˈɪmɪɡrənt/', pos: 'n.', meaning: '移民', example: 'Many immigrants built new lives here.', exampleMeaning: '许多移民在这里开始了新生活。' },
+    ],
+  },
+  {
+    id: 'senior-abstract',
+    title: '抽象与逻辑',
+    level: 'senior',
+    words: [
+      { term: 'ability', phonetic: '/əˈbɪləti/', pos: 'n.', meaning: '能力', example: 'She has the ability to solve problems.', exampleMeaning: '她有解决问题的能力。' },
+      { term: 'reason', phonetic: '/ˈriːzn/', pos: 'n./v.', meaning: '原因，推理', example: 'Tell me the reason for being late.', exampleMeaning: '告诉我迟到的原因。' },
+      { term: 'truth', phonetic: '/truːθ/', pos: 'n.', meaning: '真相，事实', example: 'We must seek the truth.', exampleMeaning: '我们必须寻求真相。' },
+      { term: 'purpose', phonetic: '/ˈpɜːrpəs/', pos: 'n.', meaning: '目的', example: 'What is the purpose of this meeting?', exampleMeaning: '这个会议的目的是什么？' },
+      { term: 'effect', phonetic: '/ɪˈfekt/', pos: 'n.', meaning: '影响，效果', example: 'The medicine had a good effect.', exampleMeaning: '这药效果很好。' },
+      { term: 'cause', phonetic: '/kɔːz/', pos: 'n./v.', meaning: '原因，引起', example: 'Smoking causes lung cancer.', exampleMeaning: '吸烟导致肺癌。' },
+      { term: 'result', phonetic: '/rɪˈzʌlt/', pos: 'n./v.', meaning: '结果', example: 'The result was surprising.', exampleMeaning: '结果令人惊讶。' },
+      { term: 'compare', phonetic: '/kəmˈper/', pos: 'v.', meaning: '比较', example: 'Compare the two pictures carefully.', exampleMeaning: '仔细比较这两张图。' },
+      { term: 'contrast', phonetic: '/ˈkɑːntræst/', pos: 'n./v.', meaning: '对比', example: 'The contrast is striking.', exampleMeaning: '对比十分鲜明。' },
+      { term: 'prove', phonetic: '/pruːv/', pos: 'v.', meaning: '证明', example: 'Can you prove your story?', exampleMeaning: '你能证明你说的话吗？' },
+      { term: 'argue', phonetic: '/ˈɑːrɡjuː/', pos: 'v.', meaning: '争论，主张', example: 'They argue about money.', exampleMeaning: '他们为钱争吵。' },
+      { term: 'explain', phonetic: '/ɪkˈspleɪn/', pos: 'v.', meaning: '解释', example: 'Please explain this rule to me.', exampleMeaning: '请给我解释这条规则。' },
+      { term: 'describe', phonetic: '/dɪˈskraɪb/', pos: 'v.', meaning: '描述', example: 'Can you describe the thief?', exampleMeaning: '你能描述一下那个小偷吗？' },
+      { term: 'assume', phonetic: '/əˈsuːm/', pos: 'v.', meaning: '假设，认为', example: "I assume you're tired.", exampleMeaning: '我猜你累了。' },
+      { term: 'conclude', phonetic: '/kənˈkluːd/', pos: 'v.', meaning: '得出结论', example: 'We concluded the meeting at 5.', exampleMeaning: '我们五点结束了会议。' },
+      { term: 'influence', phonetic: '/ˈɪnfluəns/', pos: 'n./v.', meaning: '影响', example: 'Parents influence their children.', exampleMeaning: '父母影响他们的孩子。' },
+      { term: 'consequence', phonetic: '/ˈkɑːnsəkwens/', pos: 'n.', meaning: '后果', example: 'You must face the consequences.', exampleMeaning: '你必须承担后果。' },
+      { term: 'opinion', phonetic: '/əˈpɪnjən/', pos: 'n.', meaning: '观点', example: 'In my opinion, you are right.', exampleMeaning: '在我看来，你是对的。' },
+      { term: 'concept', phonetic: '/ˈkɑːnsept/', pos: 'n.', meaning: '概念', example: "I don't understand this concept.", exampleMeaning: '我不理解这个概念。' },
+      { term: 'principle', phonetic: '/ˈprɪnsəpl/', pos: 'n.', meaning: '原则，原理', example: 'He sticks to his principles.', exampleMeaning: '他坚持自己的原则。' },
     ],
   },
 ];
@@ -121,7 +196,7 @@ export const CET4_VOCAB: VocabGroup[] = [
     level: 'cet4',
     words: [
       { term: 'abstract', phonetic: '/ˈæbstrækt/', pos: 'adj./n.', meaning: '抽象的，摘要', example: 'Love and beauty are abstract concepts.', exampleMeaning: '爱与美是抽象的概念。' },
-      { term: 'concept', phonetic: '/ˈkɑːnsept/', pos: 'n.', meaning: '概念', example: 'I don\'t understand this concept.', exampleMeaning: '我不理解这个概念。' },
+      { term: 'concept', phonetic: '/ˈkɑːnsept/', pos: 'n.', meaning: '概念', example: "I don't understand this concept.", exampleMeaning: '我不理解这个概念。' },
       { term: 'conclusion', phonetic: '/kənˈkluːʒn/', pos: 'n.', meaning: '结论', example: 'We reached the same conclusion.', exampleMeaning: '我们得出了相同的结论。' },
       { term: 'evidence', phonetic: '/ˈevɪdəns/', pos: 'n.', meaning: '证据', example: 'There is no evidence to support the claim.', exampleMeaning: '没有证据支持这一说法。' },
       { term: 'factor', phonetic: '/ˈfæktər/', pos: 'n.', meaning: '因素', example: 'Weather is a key factor in farming.', exampleMeaning: '天气是农业的关键因素。' },
@@ -130,6 +205,16 @@ export const CET4_VOCAB: VocabGroup[] = [
       { term: 'viewpoint', phonetic: '/ˈvjuːpɔɪnt/', pos: 'n.', meaning: '观点', example: 'I respect your viewpoint.', exampleMeaning: '我尊重你的观点。' },
       { term: 'assumption', phonetic: '/əˈsʌmpʃn/', pos: 'n.', meaning: '假设，假定', example: 'His assumption turned out to be wrong.', exampleMeaning: '他的假设结果是错的。' },
       { term: 'definition', phonetic: '/ˌdefɪˈnɪʃn/', pos: 'n.', meaning: '定义', example: 'Give me the definition of this word.', exampleMeaning: '给我这个词的定义。' },
+      { term: 'argument', phonetic: '/ˈɑːrɡjumənt/', pos: 'n.', meaning: '论点，争论', example: 'His argument is persuasive.', exampleMeaning: '他的论点很有说服力。' },
+      { term: 'perspective', phonetic: '/pərˈspektɪv/', pos: 'n.', meaning: '视角，观点', example: 'Try to see it from my perspective.', exampleMeaning: '试着从我的角度看问题。' },
+      { term: 'interpretation', phonetic: '/ɪnˌtɜːrprəˈteɪʃn/', pos: 'n.', meaning: '解释，诠释', example: 'Her interpretation of the poem is unique.', exampleMeaning: '她对这首诗的诠释很独特。' },
+      { term: 'judgment', phonetic: '/ˈdʒʌdʒmənt/', pos: 'n.', meaning: '判断', example: "Don't be too quick to make a judgment.", exampleMeaning: '别急于下判断。' },
+      { term: 'notion', phonetic: '/ˈnoʊʃn/', pos: 'n.', meaning: '概念，观念', example: 'He has no notion of time.', exampleMeaning: '他没有时间观念。' },
+      { term: 'hypothesis', phonetic: '/haɪˈpɑːθəsɪs/', pos: 'n.', meaning: '假设', example: 'The experiment tests our hypothesis.', exampleMeaning: '实验验证了我们的假设。' },
+      { term: 'implication', phonetic: '/ˌɪmplɪˈkeɪʃn/', pos: 'n.', meaning: '含义，影响', example: 'What are the implications of this decision?', exampleMeaning: '这个决定有什么影响？' },
+      { term: 'criterion', phonetic: '/kraɪˈtɪriən/', pos: 'n.', meaning: '标准', example: 'What is the main criterion?', exampleMeaning: '主要标准是什么？' },
+      { term: 'distinction', phonetic: '/dɪˈstɪŋkʃn/', pos: 'n.', meaning: '区别，差别', example: 'There is a clear distinction between them.', exampleMeaning: '它们之间有明显的区别。' },
+      { term: 'essence', phonetic: '/ˈesns/', pos: 'n.', meaning: '本质', example: 'Time is the essence of the problem.', exampleMeaning: '时间是问题的本质。' },
     ],
   },
   {
@@ -147,6 +232,16 @@ export const CET4_VOCAB: VocabGroup[] = [
       { term: 'profit', phonetic: '/ˈprɑːfɪt/', pos: 'n.', meaning: '利润，益处', example: 'The company made a huge profit.', exampleMeaning: '公司获得了巨额利润。' },
       { term: 'purchase', phonetic: '/ˈpɜːrtʃəs/', pos: 'v./n.', meaning: '购买', example: 'She purchased a new car.', exampleMeaning: '她买了一辆新车。' },
       { term: 'trade', phonetic: '/treɪd/', pos: 'n./v.', meaning: '贸易，交易', example: 'International trade is growing fast.', exampleMeaning: '国际贸易增长迅速。' },
+      { term: 'finance', phonetic: '/ˈfaɪnæns/', pos: 'n.', meaning: '金融，财政', example: 'She works in finance.', exampleMeaning: '她在金融行业工作。' },
+      { term: 'corporation', phonetic: '/ˌkɔːrpəˈreɪʃn/', pos: 'n.', meaning: '公司', example: 'The corporation has branches worldwide.', exampleMeaning: '这家公司在全球都有分公司。' },
+      { term: 'enterprise', phonetic: '/ˈentərpraɪz/', pos: 'n.', meaning: '企业，事业', example: 'He started a small enterprise.', exampleMeaning: '他创办了一家小企业。' },
+      { term: 'revenue', phonetic: '/ˈrevənuː/', pos: 'n.', meaning: '收入，税收', example: 'Revenue increased by 10%.', exampleMeaning: '收入增长了10%。' },
+      { term: 'expense', phonetic: '/ɪkˈspens/', pos: 'n.', meaning: '花费，开支', example: 'We must cut our expenses.', exampleMeaning: '我们必须削减开支。' },
+      { term: 'transaction', phonetic: '/trænˈzækʃn/', pos: 'n.', meaning: '交易', example: 'The transaction was completed online.', exampleMeaning: '交易在网上完成。' },
+      { term: 'negotiate', phonetic: '/nɪˈɡoʊʃieɪt/', pos: 'v.', meaning: '谈判', example: 'They negotiated a new contract.', exampleMeaning: '他们谈判签了新合同。' },
+      { term: 'manufacture', phonetic: '/ˌmænuˈfæktʃər/', pos: 'v./n.', meaning: '制造', example: 'The company manufactures cars.', exampleMeaning: '这家公司制造汽车。' },
+      { term: 'retail', phonetic: '/ˈriːteɪl/', pos: 'n./v.', meaning: '零售', example: 'They sell goods at retail prices.', exampleMeaning: '他们以零售价出售商品。' },
+      { term: 'consumer', phonetic: '/kənˈsuːmər/', pos: 'n.', meaning: '消费者', example: 'Consumers want better quality.', exampleMeaning: '消费者想要更好的质量。' },
     ],
   },
   {
@@ -166,6 +261,14 @@ export const CET4_VOCAB: VocabGroup[] = [
       { term: 'guarantee', phonetic: '/ˌɡærənˈtiː/', pos: 'v./n.', meaning: '保证', example: 'I guarantee you will love it.', exampleMeaning: '我保证你会喜欢它。' },
       { term: 'indicate', phonetic: '/ˈɪndɪkeɪt/', pos: 'v.', meaning: '表明，指示', example: 'The arrow indicates the direction.', exampleMeaning: '箭头指示方向。' },
       { term: 'influence', phonetic: '/ˈɪnfluəns/', pos: 'n./v.', meaning: '影响', example: 'Parents influence their children deeply.', exampleMeaning: '父母深深地影响他们的孩子。' },
+      { term: 'obtain', phonetic: '/əbˈteɪn/', pos: 'v.', meaning: '获得', example: 'He obtained a degree last year.', exampleMeaning: '他去年获得了学位。' },
+      { term: 'predict', phonetic: '/prɪˈdɪkt/', pos: 'v.', meaning: '预测', example: 'No one can predict the future.', exampleMeaning: '没人能预测未来。' },
+      { term: 'reveal', phonetic: '/rɪˈviːl/', pos: 'v.', meaning: '揭示，显示', example: 'The test revealed the truth.', exampleMeaning: '测试揭示了真相。' },
+      { term: 'solve', phonetic: '/sɑːlv/', pos: 'v.', meaning: '解决', example: 'We must solve this problem.', exampleMeaning: '我们必须解决这个问题。' },
+      { term: 'establish', phonetic: '/ɪˈstæblɪʃ/', pos: 'v.', meaning: '建立', example: 'The school was established in 1900.', exampleMeaning: '这所学校建于1900年。' },
+      { term: 'contribute', phonetic: '/kənˈtrɪbjuːt/', pos: 'v.', meaning: '贡献，捐献', example: 'Everyone contributed to the project.', exampleMeaning: '每个人都为这个项目做出了贡献。' },
+      { term: 'emphasize', phonetic: '/ˈemfəsaɪz/', pos: 'v.', meaning: '强调', example: 'He emphasized the importance of time.', exampleMeaning: '他强调了时间的重要性。' },
+      { term: 'maintain', phonetic: '/meɪnˈteɪn/', pos: 'v.', meaning: '维持，保养', example: 'It is hard to maintain a friendship.', exampleMeaning: '维持友谊很难。' },
     ],
   },
   {
@@ -185,6 +288,14 @@ export const CET4_VOCAB: VocabGroup[] = [
       { term: 'relevant', phonetic: '/ˈreləvənt/', pos: 'adj.', meaning: '相关的', example: 'This information is not relevant.', exampleMeaning: '这条信息不相关。' },
       { term: 'sufficient', phonetic: '/səˈfɪʃnt/', pos: 'adj.', meaning: '足够的', example: 'We have sufficient time to finish.', exampleMeaning: '我们有足够的时间完成。' },
       { term: 'valid', phonetic: '/ˈvælɪd/', pos: 'adj.', meaning: '有效的', example: 'This ticket is valid for three days.', exampleMeaning: '这张票三天内有效。' },
+      { term: 'artificial', phonetic: '/ˌɑːrtɪˈfɪʃl/', pos: 'adj.', meaning: '人造的', example: 'Artificial flowers look real.', exampleMeaning: '人造花看起来很真。' },
+      { term: 'consistent', phonetic: '/kənˈsɪstənt/', pos: 'adj.', meaning: '一致的', example: 'Her behavior is consistent.', exampleMeaning: '她的行为很一致。' },
+      { term: 'dramatic', phonetic: '/drəˈmætɪk/', pos: 'adj.', meaning: '戏剧性的，显著的', example: 'There was a dramatic change.', exampleMeaning: '出现了显著的变化。' },
+      { term: 'enormous', phonetic: '/ɪˈnɔːrməs/', pos: 'adj.', meaning: '巨大的', example: 'The elephant is enormous.', exampleMeaning: '大象很大。' },
+      { term: 'frequent', phonetic: '/ˈfriːkwənt/', pos: 'adj.', meaning: '频繁的', example: 'Frequent exercise is good for you.', exampleMeaning: '经常锻炼对你有好处。' },
+      { term: 'inevitable', phonetic: '/ɪnˈevɪtəbl/', pos: 'adj.', meaning: '不可避免的', example: 'Change is inevitable.', exampleMeaning: '变化是不可避免的。' },
+      { term: 'permanent', phonetic: '/ˈpɜːrmənənt/', pos: 'adj.', meaning: '永久的', example: 'Nothing is permanent in life.', exampleMeaning: '生活中没有什么是永恒的。' },
+      { term: 'remarkable', phonetic: '/rɪˈmɑːrkəbl/', pos: 'adj.', meaning: '显著的，非凡的', example: 'She made remarkable progress.', exampleMeaning: '她取得了显著的进步。' },
     ],
   },
   {
@@ -202,6 +313,16 @@ export const CET4_VOCAB: VocabGroup[] = [
       { term: 'research', phonetic: '/rɪˈsɜːrtʃ/', pos: 'n./v.', meaning: '研究', example: 'He is doing research on cancer.', exampleMeaning: '他在做癌症研究。' },
       { term: 'strategy', phonetic: '/ˈstrætədʒi/', pos: 'n.', meaning: '策略', example: 'We need a better marketing strategy.', exampleMeaning: '我们需要更好的营销策略。' },
       { term: 'technology', phonetic: '/tekˈnɑːlədʒi/', pos: 'n.', meaning: '技术', example: 'Technology changes our lives.', exampleMeaning: '技术改变了我们的生活。' },
+      { term: 'analysis', phonetic: '/əˈnæləsɪs/', pos: 'n.', meaning: '分析', example: 'His analysis is very deep.', exampleMeaning: '他的分析很深入。' },
+      { term: 'conclusion', phonetic: '/kənˈkluːʒn/', pos: 'n.', meaning: '结论', example: 'What is your conclusion?', exampleMeaning: '你的结论是什么？' },
+      { term: 'debate', phonetic: '/dɪˈbeɪt/', pos: 'n./v.', meaning: '辩论', example: 'The two teams will debate today.', exampleMeaning: '两队今天将进行辩论。' },
+      { term: 'discipline', phonetic: '/ˈdɪsəplɪn/', pos: 'n.', meaning: '学科，纪律', example: 'Sociology is an interesting discipline.', exampleMeaning: '社会学是一门有趣的学科。' },
+      { term: 'hypothesis', phonetic: '/haɪˈpɑːθəsɪs/', pos: 'n.', meaning: '假设', example: 'We need to test the hypothesis.', exampleMeaning: '我们需要验证这个假设。' },
+      { term: 'intellectual', phonetic: '/ˌɪntəˈlektʃuəl/', pos: 'adj./n.', meaning: '智力的，知识分子', example: 'Intellectual work is tiring.', exampleMeaning: '脑力劳动很累。' },
+      { term: 'phenomenon', phonetic: '/fəˈnɑːmɪnən/', pos: 'n.', meaning: '现象', example: 'Rain is a natural phenomenon.', exampleMeaning: '下雨是自然现象。' },
+      { term: 'publish', phonetic: '/ˈpʌblɪʃ/', pos: 'v.', meaning: '出版，发表', example: 'She published a book last year.', exampleMeaning: '她去年出版了一本书。' },
+      { term: 'survey', phonetic: '/ˈsɜːrveɪ/', pos: 'n./v.', meaning: '调查', example: 'We did a survey of 100 people.', exampleMeaning: '我们对100人做了调查。' },
+      { term: 'theory', phonetic: '/ˈθiːəri/', pos: 'n.', meaning: '理论', example: 'Darwin proposed the theory of evolution.', exampleMeaning: '达尔文提出了进化论。' },
     ],
   },
   {
@@ -219,6 +340,43 @@ export const CET4_VOCAB: VocabGroup[] = [
       { term: 'responsibility', phonetic: '/rɪˌspɑːnsəˈbɪləti/', pos: 'n.', meaning: '责任', example: 'Parents have a responsibility to their children.', exampleMeaning: '父母对孩子负有责任。' },
       { term: 'consequence', phonetic: '/ˈkɑːnsəkwens/', pos: 'n.', meaning: '后果', example: 'You must face the consequences.', exampleMeaning: '你必须承担后果。' },
       { term: 'awareness', phonetic: '/əˈwernəs/', pos: 'n.', meaning: '意识', example: 'We should raise environmental awareness.', exampleMeaning: '我们应该提高环保意识。' },
+      { term: 'conflict', phonetic: '/ˈkɑːnflɪkt/', pos: 'n./v.', meaning: '冲突', example: 'The two countries are in conflict.', exampleMeaning: '两国处于冲突之中。' },
+      { term: 'cooperation', phonetic: '/koʊˌɑːpəˈreɪʃn/', pos: 'n.', meaning: '合作', example: ' Cooperation leads to success.', exampleMeaning: '合作带来成功。' },
+      { term: 'discrimination', phonetic: '/dɪˌskrɪmɪˈneɪʃn/', pos: 'n.', meaning: '歧视', example: 'Racial discrimination is wrong.', exampleMeaning: '种族歧视是错误的。' },
+      { term: 'equality', phonetic: '/iˈkwɑːləti/', pos: 'n.', meaning: '平等', example: 'Everyone deserves equality.', exampleMeaning: '每个人都应享有平等。' },
+      { term: 'liberty', phonetic: '/ˈlɪbərti/', pos: 'n.', meaning: '自由', example: 'Liberty is a basic human right.', exampleMeaning: '自由是基本人权。' },
+      { term: 'morality', phonetic: '/məˈræləti/', pos: 'n.', meaning: '道德', example: 'His morality is questionable.', exampleMeaning: '他的道德值得怀疑。' },
+      { term: 'prejudice', phonetic: '/ˈpredʒədɪs/', pos: 'n.', meaning: '偏见', example: 'We should fight against prejudice.', exampleMeaning: '我们应该反对偏见。' },
+      { term: 'stress', phonetic: '/stres/', pos: 'n./v.', meaning: '压力', example: 'Work stress affects health.', exampleMeaning: '工作压力影响健康。' },
+      { term: 'tradition', phonetic: '/trəˈdɪʃn/', pos: 'n.', meaning: '传统', example: 'We should respect our traditions.', exampleMeaning: '我们应该尊重传统。' },
+      { term: 'value', phonetic: '/ˈvæljuː/', pos: 'n./v.', meaning: '价值', example: 'Family values are important.', exampleMeaning: '家庭价值观很重要。' },
+    ],
+  },
+  {
+    id: 'cet4-adverb',
+    title: '高频副词与连接词',
+    level: 'cet4',
+    words: [
+      { term: 'absolutely', phonetic: '/ˈæbsəluːtli/', pos: 'adv.', meaning: '绝对地', example: 'You are absolutely right.', exampleMeaning: '你完全正确。' },
+      { term: 'actually', phonetic: '/ˈæktʃuəli/', pos: 'adv.', meaning: '实际上', example: 'Actually, I do not know him.', exampleMeaning: '其实我不认识他。' },
+      { term: 'currently', phonetic: '/ˈkʌrəntli/', pos: 'adv.', meaning: '目前', example: 'She is currently in Tokyo.', exampleMeaning: '她目前在东京。' },
+      { term: 'eventually', phonetic: '/ɪˈventʃuəli/', pos: 'adv.', meaning: '最终', example: 'He eventually passed the exam.', exampleMeaning: '他最终通过了考试。' },
+      { term: 'frequently', phonetic: '/ˈfriːkwəntli/', pos: 'adv.', meaning: '频繁地', example: 'She frequently visits her parents.', exampleMeaning: '她经常去看望父母。' },
+      { term: 'gradually', phonetic: '/ˈɡrædʒuəli/', pos: 'adv.', meaning: '逐渐地', example: 'The weather gradually warmed up.', exampleMeaning: '天气逐渐变暖了。' },
+      { term: 'hardly', phonetic: '/ˈhɑːrdli/', pos: 'adv.', meaning: '几乎不', example: 'I can hardly believe my eyes.', exampleMeaning: '我几乎不敢相信自己的眼睛。' },
+      { term: 'indeed', phonetic: '/ɪnˈdiːd/', pos: 'adv.', meaning: '确实', example: 'It is indeed a great movie.', exampleMeaning: '这确实是部好电影。' },
+      { term: 'naturally', phonetic: '/ˈnætʃrəli/', pos: 'adv.', meaning: '自然地', example: 'Naturally, she was happy.', exampleMeaning: '她自然很开心。' },
+      { term: 'particularly', phonetic: '/pərˈtɪkjələrli/', pos: 'adv.', meaning: '特别地', example: 'I particularly like jazz.', exampleMeaning: '我特别喜欢爵士乐。' },
+      { term: 'rarely', phonetic: '/ˈrerli/', pos: 'adv.', meaning: '很少', example: 'He rarely goes out at night.', exampleMeaning: '他很少晚上出门。' },
+      { term: 'rarely', phonetic: '/ˈrerli/', pos: 'adv.', meaning: '难得地', example: 'We rarely see each other now.', exampleMeaning: '我们现在难得见面。' },
+      { term: 'significantly', phonetic: '/sɪɡˈnɪfɪkəntli/', pos: 'adv.', meaning: '显著地', example: 'Prices rose significantly.', exampleMeaning: '价格显著上涨。' },
+      { term: 'similarly', phonetic: '/ˈsɪmələrli/', pos: 'adv.', meaning: '相似地', example: 'Similarly, others agreed.', exampleMeaning: '同样地，其他人也同意。' },
+      { term: 'suddenly', phonetic: '/ˈsʌdənli/', pos: 'adv.', meaning: '突然地', example: 'Suddenly, the lights went out.', exampleMeaning: '突然灯灭了。' },
+      { term: 'therefore', phonetic: '/ˈðerfɔːr/', pos: 'adv.', meaning: '因此', example: 'It rained, therefore we stayed home.', exampleMeaning: '下雨了，因此我们待在家。' },
+      { term: 'thus', phonetic: '/ðʌs/', pos: 'adv.', meaning: '因此', example: 'Thus, the plan was canceled.', exampleMeaning: '于是计划被取消了。' },
+      { term: 'moreover', phonetic: '/mɔːrˈoʊvər/', pos: 'adv.', meaning: '此外', example: 'Moreover, it is cheap.', exampleMeaning: '此外，它还很便宜。' },
+      { term: 'nevertheless', phonetic: '/ˌnevərðəˈles/', pos: 'adv.', meaning: '然而', example: 'It was raining, nevertheless we left.', exampleMeaning: '虽然在下雨，我们还是出发了。' },
+      { term: 'otherwise', phonetic: '/ˈʌðərwaɪz/', pos: 'adv.', meaning: '否则', example: 'Hurry up, otherwise you will be late.', exampleMeaning: '快点，否则你会迟到。' },
     ],
   },
 ];
@@ -229,4 +387,14 @@ export const ALL_VOCAB_GROUPS: VocabGroup[] = [...SENIOR_VOCAB, ...CET4_VOCAB];
 /** 按等级获取词汇组 */
 export function getVocabByLevel(level: 'senior' | 'cet4'): VocabGroup[] {
   return ALL_VOCAB_GROUPS.filter((g) => g.level === level);
+}
+
+/** 获取某等级下所有词汇（扁平化） */
+export function getAllVocabByLevel(level: 'senior' | 'cet4'): VocabEntry[] {
+  return getVocabByLevel(level).flatMap((g) => g.words);
+}
+
+/** 统计某等级词汇总数 */
+export function countVocabByLevel(level: 'senior' | 'cet4'): number {
+  return getAllVocabByLevel(level).length;
 }

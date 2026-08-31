@@ -94,7 +94,7 @@ export interface UserStats {
   wordsLearned: number;
   perfectLessons: number;
   languagesStudied: number;
-  communityPosts: number;
+  vocabTaskWords: number; // 单词任务累计学习词数
   speakingPracticeCount: number;
 }
 
@@ -114,6 +114,8 @@ export interface User {
   unlockedAchievements: string[];
   /** 进度记录 key: `${courseId}:${lessonId}` */
   progress: Record<string, LessonProgress>;
+  /** 单词任务进度 key: 'senior' | 'cet4' */
+  vocabTaskProgress: Record<'senior' | 'cet4', VocabTaskProgress>;
   /** 学习日历 YYYY-MM-DD => xp */
   activityCalendar: Record<string, number>;
 }
@@ -126,26 +128,17 @@ export interface LessonProgress {
   attempts: number;
 }
 
-export interface CommunityPost {
-  id: string;
-  userId: string;
-  userName: string;
-  avatar: string;
-  language: LangCode;
-  title: string;
-  content: string;
-  createdAt: number;
-  likes: number;
-  likedBy: string[];
-  comments: Comment[];
-  tag: string;
-}
-
-export interface Comment {
-  id: string;
-  userId: string;
-  userName: string;
-  avatar: string;
-  content: string;
-  createdAt: number;
+/** 单词任务学习进度（按等级 senior / cet4 分别记录） */
+export interface VocabTaskProgress {
+  /** 已掌握（通过测验）的单词 term 集合 */
+  masteredTerms: string[];
+  /** 已学过（看过卡片）的单词 term 集合 */
+  seenTerms: string[];
+  /** 累计完成任务轮次 */
+  roundsCompleted: number;
+  /** 累计答对题数 */
+  totalCorrect: number;
+  /** 累计答题数 */
+  totalAnswered: number;
+  lastUpdatedAt: number;
 }

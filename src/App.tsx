@@ -8,7 +8,7 @@ import { Courses } from './pages/Courses';
 import { CourseDetail } from './pages/CourseDetail';
 import { Lesson } from './pages/Lesson';
 import { Path } from './pages/Path';
-import { Community } from './pages/Community';
+import { VocabTasks } from './pages/VocabTasks';
 import { Profile } from './pages/Profile';
 import type { ReactNode } from 'react';
 
@@ -70,10 +70,10 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/app/community"
+        path="/app/tasks"
         element={
           <RequireAuth>
-            <Community />
+            <VocabTasks />
           </RequireAuth>
         }
       />

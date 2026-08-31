@@ -5,8 +5,8 @@ import { Avatar } from './ui';
 const navItems = [
   { to: '/app', label: '学习', icon: '🏠', end: true },
   { to: '/app/courses', label: '课程', icon: '📚', end: false },
+  { to: '/app/tasks', label: '背词', icon: '✍️', end: false },
   { to: '/app/path', label: '推荐', icon: '🧭', end: false },
-  { to: '/app/community', label: '社区', icon: '💬', end: false },
   { to: '/app/profile', label: '我的', icon: '👤', end: false },
 ];
 

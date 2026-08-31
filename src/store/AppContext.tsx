@@ -2,15 +2,14 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { ReactNode } from 'react';
 import type {
   CEFRLevel,
-  CommunityPost,
   LangCode,
   LessonProgress,
   User,
   UserStats,
+  VocabTaskProgress,
 } from '../data/types';
 import { ACHIEVEMENTS } from '../data/achievements';
 import { allLessonsFlat } from '../data/courses';
-import { SEED_POSTS } from '../data/community';
 import {
   clearSession,
   computeStreak,
@@ -23,7 +22,6 @@ import {
 
 const USERS_KEY = 'users';
 const SESSION_KEY = 'session';
-const POSTS_KEY = 'posts';
 
 /** 记住我默认有效期（7 天） */
 export const REMEMBER_DAYS = 7;
@@ -35,14 +33,22 @@ const EMPTY_STATS: UserStats = {
   wordsLearned: 0,
   perfectLessons: 0,
   languagesStudied: 0,
-  communityPosts: 0,
+  vocabTaskWords: 0,
   speakingPracticeCount: 0,
+};
+
+const EMPTY_VOCAB_TASK_PROGRESS: VocabTaskProgress = {
+  masteredTerms: [],
+  seenTerms: [],
+  roundsCompleted: 0,
+  totalCorrect: 0,
+  totalAnswered: 0,
+  lastUpdatedAt: 0,
 };
 
 interface AppContextValue {
   user: User | null;
   users: User[];
-  posts: CommunityPost[];
   // auth
   register: (input: { name: string; email: string; password: string; targetLanguages: LangCode[] }, remember?: boolean) =>
     | { ok: true; user: User }
@@ -62,10 +68,16 @@ interface AppContextValue {
     wordsLearned?: number;
     isSpeaking?: boolean;
   }) => { newlyUnlocked: string[]; leveledUp?: boolean };
-  // community
-  addPost: (input: { title: string; content: string; language: LangCode; tag: string }) => void;
-  toggleLike: (postId: string) => void;
-  addComment: (postId: string, content: string) => void;
+  // vocab task（单词任务）
+  getVocabTaskProgress: (level: 'senior' | 'cet4') => VocabTaskProgress;
+  completeVocabTaskRound: (input: {
+    level: 'senior' | 'cet4';
+    seenTerms: string[];
+    masteredTerms: string[];
+    correct: number;
+    answered: number;
+    xp: number;
+  }) => { newlyUnlocked: string[] };
   // recommendations
   recommendedNext: () => { courseId: string; lessonId: string; reason: string } | null;
 }
@@ -76,20 +88,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<User[]>(() => storage.get<User[]>(USERS_KEY, []));
   // 启动时校验会话：未过期返回 id，过期返回 null 并自动清理
   const [sessionId, setSessionId] = useState<string | null>(() => getSessionWithTTL(SESSION_KEY));
-  const [posts, setPosts] = useState<CommunityPost[]>(() => storage.get<CommunityPost[]>(POSTS_KEY, SEED_POSTS));
 
   useEffect(() => storage.set(USERS_KEY, users), [users]);
   // sessionId 变化时：null 则彻底清除，非 null 视为登录态，由 login/register 控制 TTL，这里无需重复写
   useEffect(() => {
     if (sessionId === null) clearSession(SESSION_KEY);
   }, [sessionId]);
-  useEffect(() => storage.set(POSTS_KEY, posts), [posts]);
 
   const user = useMemo(() => users.find((u) => u.id === sessionId) ?? null, [users, sessionId]);
 
   const persistUser = useCallback((updated: User) => {
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
   }, []);
+
+  // 兼容旧用户数据：补全缺失字段
+  const ensureUserShape = (u: User): User => ({
+    ...u,
+    vocabTaskProgress: u.vocabTaskProgress ?? {
+      senior: { ...EMPTY_VOCAB_TASK_PROGRESS },
+      cet4: { ...EMPTY_VOCAB_TASK_PROGRESS },
+    },
+    stats: { ...EMPTY_STATS, ...u.stats },
+  });
 
   const register: AppContextValue['register'] = ({ name, email, password, targetLanguages }, remember = true) => {
     const exists = users.some((u) => u.email.toLowerCase() === email.toLowerCase());
@@ -112,6 +132,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       stats: { ...EMPTY_STATS, languagesStudied: targetLanguages.length },
       unlockedAchievements: [],
       progress: {},
+      vocabTaskProgress: {
+        senior: { ...EMPTY_VOCAB_TASK_PROGRESS },
+        cet4: { ...EMPTY_VOCAB_TASK_PROGRESS },
+      },
       activityCalendar: {},
     };
     setUsers((prev) => [...prev, newUser]);
@@ -169,8 +193,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     isSpeaking = false,
   }) => {
     if (!user) return { newlyUnlocked: [] };
+    const u = ensureUserShape(user);
     const key = `${courseId}:${lessonId}`;
-    const prev = user.progress[key];
+    const prev = u.progress[key];
     const wasCompleted = prev?.status === 'completed';
     const newlyCompleted = !wasCompleted && score >= 60;
     const prevScore = prev?.score ?? 0;
@@ -185,30 +210,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
 
     const today = todayKey();
-    const activityCalendar = { ...user.activityCalendar, [today]: (user.activityCalendar[today] ?? 0) + xp };
+    const activityCalendar = { ...u.activityCalendar, [today]: (u.activityCalendar[today] ?? 0) + xp };
     const streak = computeStreak(activityCalendar);
 
     const stats: UserStats = {
-      ...user.stats,
-      totalXP: user.stats.totalXP + (wasCompleted ? Math.floor(xp / 2) : xp),
-      streakDays: Math.max(user.stats.streakDays, streak),
-      lessonsCompleted: user.stats.lessonsCompleted + (newlyCompleted ? 1 : 0),
-      wordsLearned: user.stats.wordsLearned + (newlyCompleted ? wordsLearned : 0),
-      perfectLessons: user.stats.perfectLessons + (perfectNow && newlyCompleted ? 1 : 0),
-      speakingPracticeCount: user.stats.speakingPracticeCount + (isSpeaking ? 1 : 0),
-      languagesStudied: user.targetLanguages.length,
+      ...u.stats,
+      totalXP: u.stats.totalXP + (wasCompleted ? Math.floor(xp / 2) : xp),
+      streakDays: Math.max(u.stats.streakDays, streak),
+      lessonsCompleted: u.stats.lessonsCompleted + (newlyCompleted ? 1 : 0),
+      wordsLearned: u.stats.wordsLearned + (newlyCompleted ? wordsLearned : 0),
+      perfectLessons: u.stats.perfectLessons + (perfectNow && newlyCompleted ? 1 : 0),
+      speakingPracticeCount: u.stats.speakingPracticeCount + (isSpeaking ? 1 : 0),
+      languagesStudied: u.targetLanguages.length,
     };
 
-    const before = new Set(user.unlockedAchievements);
-    const after = new Set(user.unlockedAchievements);
+    const before = new Set(u.unlockedAchievements);
+    const after = new Set(u.unlockedAchievements);
     for (const a of ACHIEVEMENTS) {
       if (!after.has(a.id) && a.check(stats)) after.add(a.id);
     }
     const newlyUnlocked = [...after].filter((id) => !before.has(id));
 
     const updatedUser: User = {
-      ...user,
-      progress: { ...user.progress, [key]: updatedProgress },
+      ...u,
+      progress: { ...u.progress, [key]: updatedProgress },
       activityCalendar,
       stats,
       unlockedAchievements: [...after],
@@ -218,66 +243,71 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return { newlyUnlocked };
   };
 
-  const addPost: AppContextValue['addPost'] = ({ title, content, language, tag }) => {
-    if (!user) return;
-    const post: CommunityPost = {
-      id: uid('p_'),
-      userId: user.id,
-      userName: user.name,
-      avatar: user.avatar,
-      language,
-      title,
-      content,
-      createdAt: Date.now(),
-      likes: 0,
-      likedBy: [],
-      comments: [],
-      tag,
+  const getVocabTaskProgress: AppContextValue['getVocabTaskProgress'] = (level) => {
+    if (!user) return { ...EMPTY_VOCAB_TASK_PROGRESS };
+    const u = ensureUserShape(user);
+    return u.vocabTaskProgress[level] ?? { ...EMPTY_VOCAB_TASK_PROGRESS };
+  };
+
+  const completeVocabTaskRound: AppContextValue['completeVocabTaskRound'] = ({
+    level,
+    seenTerms,
+    masteredTerms,
+    correct,
+    answered,
+    xp,
+  }) => {
+    if (!user) return { newlyUnlocked: [] };
+    const u = ensureUserShape(user);
+    const prev = u.vocabTaskProgress[level] ?? { ...EMPTY_VOCAB_TASK_PROGRESS };
+
+    const seenSet = new Set(prev.seenTerms);
+    seenTerms.forEach((t) => seenSet.add(t));
+    const masteredSet = new Set(prev.masteredTerms);
+    masteredTerms.forEach((t) => masteredSet.add(t));
+
+    // 新掌握的词数（本轮首次掌握）
+    const newlyMastered = masteredTerms.filter((t) => !prev.masteredTerms.includes(t));
+
+    const updatedVocabProgress: VocabTaskProgress = {
+      seenTerms: [...seenSet],
+      masteredTerms: [...masteredSet],
+      roundsCompleted: prev.roundsCompleted + 1,
+      totalCorrect: prev.totalCorrect + correct,
+      totalAnswered: prev.totalAnswered + answered,
+      lastUpdatedAt: Date.now(),
     };
-    setPosts((prev) => [post, ...prev]);
-    const stats: UserStats = { ...user.stats, communityPosts: user.stats.communityPosts + 1 };
-    const after = new Set(user.unlockedAchievements);
-    for (const a of ACHIEVEMENTS) if (!after.has(a.id) && a.check(stats)) after.add(a.id);
-    persistUser({ ...user, stats, unlockedAchievements: [...after] });
-  };
 
-  const toggleLike: AppContextValue['toggleLike'] = (postId) => {
-    if (!user) return;
-    setPosts((prev) =>
-      prev.map((p) => {
-        if (p.id !== postId) return p;
-        const liked = p.likedBy.includes(user.id);
-        return {
-          ...p,
-          liked: !liked ? p.likes + 1 : p.likes - 1,
-          likedBy: liked ? p.likedBy.filter((id) => id !== user.id) : [...p.likedBy, user.id],
-        };
-      }),
-    );
-  };
+    const today = todayKey();
+    const activityCalendar = { ...u.activityCalendar, [today]: (u.activityCalendar[today] ?? 0) + xp };
+    const streak = computeStreak(activityCalendar);
 
-  const addComment: AppContextValue['addComment'] = (postId, content) => {
-    if (!user) return;
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              comments: [
-                ...p.comments,
-                {
-                  id: uid('c_'),
-                  userId: user.id,
-                  userName: user.name,
-                  avatar: user.avatar,
-                  content,
-                  createdAt: Date.now(),
-                },
-              ],
-            }
-          : p,
-      ),
-    );
+    const stats: UserStats = {
+      ...u.stats,
+      totalXP: u.stats.totalXP + xp,
+      streakDays: Math.max(u.stats.streakDays, streak),
+      wordsLearned: u.stats.wordsLearned + newlyMastered.length,
+      vocabTaskWords: u.stats.vocabTaskWords + masteredTerms.length,
+      languagesStudied: u.targetLanguages.length,
+    };
+
+    const before = new Set(u.unlockedAchievements);
+    const after = new Set(u.unlockedAchievements);
+    for (const a of ACHIEVEMENTS) {
+      if (!after.has(a.id) && a.check(stats)) after.add(a.id);
+    }
+    const newlyUnlocked = [...after].filter((id) => !before.has(id));
+
+    const updatedUser: User = {
+      ...u,
+      vocabTaskProgress: { ...u.vocabTaskProgress, [level]: updatedVocabProgress },
+      activityCalendar,
+      stats,
+      unlockedAchievements: [...after],
+    };
+    persistUser(updatedUser);
+
+    return { newlyUnlocked };
   };
 
   const recommendedNext: AppContextValue['recommendedNext'] = () => {
@@ -307,16 +337,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const value: AppContextValue = {
     user,
     users,
-    posts,
     register,
     login,
     logout,
     updateProfile,
     getLessonProgress,
     completeLesson,
-    addPost,
-    toggleLike,
-    addComment,
+    getVocabTaskProgress,
+    completeVocabTaskRound,
     recommendedNext,
   };
 
