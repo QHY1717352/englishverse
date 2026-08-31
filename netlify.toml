@@ -1,0 +1,28 @@
+# Netlify 部署配置 — EnglishVerse 英语学习平台（纯前端 SPA）
+[build]
+  # 构建命令
+  command = "npm run build"
+  # 构建产物目录
+  publish = "dist"
+
+# SPA 路由 fallback：所有未知路径返回 index.html，由前端路由处理
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# 安全 & 缓存头
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"

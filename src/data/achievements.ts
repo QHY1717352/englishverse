@@ -1,0 +1,100 @@
+import type { Achievement } from './types';
+
+/** 成就激励系统：依据用户统计自动解锁 */
+export const ACHIEVEMENTS: Achievement[] = [
+  {
+    id: 'first-step',
+    title: '初出茅庐',
+    description: '完成第一节课',
+    icon: '🌱',
+    tier: 'bronze',
+    check: (s) => s.lessonsCompleted >= 1,
+  },
+  {
+    id: 'streak-3',
+    title: '小试牛刀',
+    description: '连续学习 3 天',
+    icon: '🔥',
+    tier: 'bronze',
+    check: (s) => s.streakDays >= 3,
+  },
+  {
+    id: 'streak-7',
+    title: '一周不辍',
+    description: '连续学习 7 天',
+    icon: '⚡',
+    tier: 'silver',
+    check: (s) => s.streakDays >= 7,
+  },
+  {
+    id: 'lessons-10',
+    title: '勤学者',
+    description: '完成 10 节课',
+    icon: '📚',
+    tier: 'silver',
+    check: (s) => s.lessonsCompleted >= 10,
+  },
+  {
+    id: 'words-100',
+    title: '词汇达人',
+    description: '累计学习 100 个单词',
+    icon: '💎',
+    tier: 'silver',
+    check: (s) => s.wordsLearned >= 100,
+  },
+  {
+    id: 'perfect-5',
+    title: '完美主义者',
+    description: '获得 5 个满分课时',
+    icon: '🎯',
+    tier: 'gold',
+    check: (s) => s.perfectLessons >= 5,
+  },
+  {
+    id: 'speaking-20',
+    title: '开口说',
+    description: '完成 20 次口语跟读',
+    icon: '🎤',
+    tier: 'gold',
+    check: (s) => s.speakingPracticeCount >= 20,
+  },
+  {
+    id: 'words-200',
+    title: '词汇大师',
+    description: '累计学习 200 个单词',
+    icon: '🌍',
+    tier: 'gold',
+    check: (s) => s.wordsLearned >= 200,
+  },
+  {
+    id: 'community-5',
+    title: '社区新星',
+    description: '在社区发表 5 条动态',
+    icon: '💬',
+    tier: 'gold',
+    check: (s) => s.communityPosts >= 5,
+  },
+  {
+    id: 'xp-1000',
+    title: '语言大师',
+    description: '累计获得 1000 经验值',
+    icon: '👑',
+    tier: 'platinum',
+    check: (s) => s.totalXP >= 1000,
+  },
+  {
+    id: 'streak-30',
+    title: '坚持不懈',
+    description: '连续学习 30 天',
+    icon: '🏆',
+    tier: 'platinum',
+    check: (s) => s.streakDays >= 30,
+  },
+];
+
+export const TIER_STYLE: Record<Achievement['tier'], string> = {
+  bronze: 'from-amber-300 to-orange-400',
+  silver: 'from-slate-300 to-slate-400',
+  gold: 'from-yellow-300 to-amber-500',
+  platinum: 'from-cyan-200 to-indigo-400',
+};

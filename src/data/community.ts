@@ -1,0 +1,90 @@
+import type { CommunityPost } from './types';
+
+/** 预置社区动态种子数据（英语学习主题） */
+const now = Date.now();
+const day = 24 * 60 * 60 * 1000;
+
+export const SEED_POSTS: CommunityPost[] = [
+  {
+    id: 'seed-1',
+    userId: 'seed-user-1',
+    userName: '英语小达人',
+    avatar: '🇬🇧',
+    language: 'en',
+    title: '分享一个练听力的好方法',
+    content: '每天通勤路上播一段 BBC 6 Minute English，先盲听再对照文本，1 个月下来进步超明显！大家还有什么听力资源推荐吗？',
+    createdAt: now - 2 * day,
+    likes: 32,
+    likedBy: [],
+    tag: '学习心得',
+    comments: [
+      {
+        id: 'c1',
+        userId: 'seed-user-2',
+        userName: '阿哲',
+        avatar: '🎧',
+        content: '收藏了，今晚就试！BBC Learning English 真的很宝藏。',
+        createdAt: now - 1.5 * day,
+      },
+      {
+        id: 'c2',
+        userId: 'seed-user-3',
+        userName: '词汇控',
+        avatar: '📚',
+        content: '配合影子跟读法，效果会更好哦～',
+        createdAt: now - 1 * day,
+      },
+    ],
+  },
+  {
+    id: 'seed-2',
+    userId: 'seed-user-4',
+    userName: '四级冲刺中',
+    avatar: '🎓',
+    language: 'en',
+    title: '四级高频词总是记不住怎么办？',
+    content: 'abstract、concept、principle 这些抽象类词汇背了就忘，大家有没有好的记忆方法？',
+    createdAt: now - 1 * day,
+    likes: 18,
+    likedBy: [],
+    tag: '学习求助',
+    comments: [
+      {
+        id: 'c3',
+        userId: 'seed-user-5',
+        userName: '学姐Annie',
+        avatar: '🦊',
+        content: '把单词放进例句里记！比如 Love and beauty are abstract concepts. 这样有语境就不容易忘。',
+        createdAt: now - 0.5 * day,
+      },
+    ],
+  },
+  {
+    id: 'seed-3',
+    userId: 'seed-user-6',
+    userName: '打卡小能手',
+    avatar: '🔥',
+    language: 'en',
+    title: '连续打卡 30 天啦！',
+    content: '从 A1 入门到今天，每天坚持 15 分钟，已经学完 100 个单词。坚持真的会有收获，一起加油！',
+    createdAt: now - 0.3 * day,
+    likes: 56,
+    likedBy: [],
+    tag: '打卡分享',
+    comments: [],
+  },
+  {
+    id: 'seed-4',
+    userId: 'seed-user-7',
+    userName: '词汇控',
+    avatar: '📚',
+    language: 'en',
+    title: '推荐一个背词技巧：一词一句法',
+    content: '背单词时不要只记中文释义，一定要看例句！每个单词配一句运用它的句子，理解了用法才能真正记住。比如 essential：Water is essential to life. 一眼就记住了。',
+    createdAt: now - 0.1 * day,
+    likes: 24,
+    likedBy: [],
+    tag: '词汇积累',
+    comments: [],
+  },
+];
