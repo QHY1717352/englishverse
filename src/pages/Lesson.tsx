@@ -364,7 +364,9 @@ function VocabCardStage({
             )}
           </div>
         ) : (
-          <div className="mt-4 text-xs text-ink-600">点击卡片查看释义与例句</div>
+          <div className="mt-4 text-xs text-ink-600">
+            {item.example ? '点击卡片查看释义与例句' : '点击卡片查看释义'}
+          </div>
         )}
       </button>
       <div className="flex justify-center gap-3 mt-5">

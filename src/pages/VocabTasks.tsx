@@ -294,7 +294,7 @@ function CardStage({
 
   const playExample = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!speechSupported()) return;
+    if (!speechSupported() || !word.example) return;
     setSpeakingExample(true);
     speak(word.example, { lang: TTS_LANG, rate: 0.9, onEnd: () => setSpeakingExample(false) });
   };
@@ -310,27 +310,31 @@ function CardStage({
       >
         <div className="flex items-center gap-2">
           <div className="text-3xl font-extrabold text-ink-900">{word.term}</div>
-          <span className="chip bg-brand-50 text-brand-700 text-xs px-2 py-0.5">{word.pos}</span>
+          {word.pos && (
+            <span className="chip bg-brand-50 text-brand-700 text-xs px-2 py-0.5">{word.pos}</span>
+          )}
         </div>
-        <div className="text-sm text-brand-600 mt-1 font-mono">{word.phonetic}</div>
+        {word.phonetic && <div className="text-sm text-brand-600 mt-1 font-mono">{word.phonetic}</div>}
 
         {flipped ? (
           <div className="mt-4 animate-pop w-full">
             <div className="text-xl font-bold text-accent-600">{word.meaning}</div>
-            <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 text-left">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-ink-600">📖 句子阅读</span>
-                <button
-                  onClick={playExample}
-                  disabled={!speechSupported()}
-                  className="text-xs text-brand-600 hover:text-brand-700 font-medium disabled:opacity-40"
-                >
-                  {speakingExample ? '🔊 朗读中…' : '🔊 朗读例句'}
-                </button>
+            {word.example && (
+              <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 text-left">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-ink-600">📖 句子阅读</span>
+                  <button
+                    onClick={playExample}
+                    disabled={!speechSupported()}
+                    className="text-xs text-brand-600 hover:text-brand-700 font-medium disabled:opacity-40"
+                  >
+                    {speakingExample ? '🔊 朗读中…' : '🔊 朗读例句'}
+                  </button>
+                </div>
+                <div className="text-sm font-medium text-ink-900 italic">"{word.example}"</div>
+                <div className="text-xs text-ink-600 mt-1">{word.exampleMeaning}</div>
               </div>
-              <div className="text-sm font-medium text-ink-900 italic">"{word.example}"</div>
-              <div className="text-xs text-ink-600 mt-1">{word.exampleMeaning}</div>
-            </div>
+            )}
           </div>
         ) : (
           <div className="mt-4 text-xs text-ink-600">点击卡片查看释义与例句</div>
@@ -386,7 +390,7 @@ function QuizStage({
       <div className="card p-6 text-center">
         <div className="text-xs text-ink-600">选择正确的释义</div>
         <div className="text-3xl font-extrabold text-ink-900 mt-2">{word.term}</div>
-        <div className="text-sm text-brand-600 mt-1 font-mono">{word.phonetic}</div>
+        {word.phonetic && <div className="text-sm text-brand-600 mt-1 font-mono">{word.phonetic}</div>}
       </div>
       <div className="grid grid-cols-1 gap-2 mt-4">
         {options.map((opt) => {
@@ -412,7 +416,7 @@ function QuizStage({
           );
         })}
       </div>
-      {picked && (
+      {picked && word.example && (
         <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 text-left animate-pop">
           <div className="text-xs text-ink-600 mb-1">📖 例句</div>
           <div className="text-sm font-medium text-ink-900 italic">"{word.example}"</div>

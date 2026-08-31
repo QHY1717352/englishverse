@@ -23,8 +23,8 @@ export interface VocabItem {
   meaning: string;
   example?: string;
   exampleMeaning?: string;
-  phonetic?: string; // 音标（英语）
-  pos?: string; // 词性 n./v./adj. 等
+  phonetic?: string; // 音标（英语），可选
+  pos?: string; // 词性 n./v./adj. 等，可选
 }
 
 export interface GrammarPoint {
