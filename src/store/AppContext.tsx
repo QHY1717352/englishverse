@@ -40,6 +40,7 @@ const EMPTY_STATS: UserStats = {
 const EMPTY_VOCAB_TASK_PROGRESS: VocabTaskProgress = {
   masteredTerms: [],
   seenTerms: [],
+  wrongTerms: [],
   roundsCompleted: 0,
   totalCorrect: 0,
   totalAnswered: 0,
@@ -74,6 +75,7 @@ interface AppContextValue {
     level: 'senior' | 'cet4';
     seenTerms: string[];
     masteredTerms: string[];
+    wrongTerms: string[];
     correct: number;
     answered: number;
     xp: number;
@@ -102,14 +104,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // 兼容旧用户数据：补全缺失字段
-  const ensureUserShape = (u: User): User => ({
-    ...u,
-    vocabTaskProgress: u.vocabTaskProgress ?? {
-      senior: { ...EMPTY_VOCAB_TASK_PROGRESS },
-      cet4: { ...EMPTY_VOCAB_TASK_PROGRESS },
-    },
-    stats: { ...EMPTY_STATS, ...u.stats },
-  });
+  const ensureUserShape = (u: User): User => {
+    const ensureVocabProgress = (p?: Partial<VocabTaskProgress>): VocabTaskProgress => ({
+      ...EMPTY_VOCAB_TASK_PROGRESS,
+      ...p,
+    });
+    return {
+      ...u,
+      vocabTaskProgress: u.vocabTaskProgress ?? {
+        senior: ensureVocabProgress(),
+        cet4: ensureVocabProgress(),
+      },
+      ...(u.vocabTaskProgress
+        ? {
+            vocabTaskProgress: {
+              senior: ensureVocabProgress(u.vocabTaskProgress.senior),
+              cet4: ensureVocabProgress(u.vocabTaskProgress.cet4),
+            },
+          }
+        : {}),
+      stats: { ...EMPTY_STATS, ...u.stats },
+    };
+  };
 
   const register: AppContextValue['register'] = ({ name, email, password, targetLanguages }, remember = true) => {
     const exists = users.some((u) => u.email.toLowerCase() === email.toLowerCase());
@@ -253,6 +269,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     level,
     seenTerms,
     masteredTerms,
+    wrongTerms,
     correct,
     answered,
     xp,
@@ -269,9 +286,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // 新掌握的词数（本轮首次掌握）
     const newlyMastered = masteredTerms.filter((t) => !prev.masteredTerms.includes(t));
 
+    // 错词队列：本轮答对的词从历史错词中移除，本轮答错的词加入（下一轮优先考察）
+    const answeredRight = new Set(masteredTerms);
+    const prevWrong = prev.wrongTerms ?? [];
+    const wrongQueue = Array.from(
+      new Set([...prevWrong.filter((t) => !answeredRight.has(t)), ...wrongTerms]),
+    );
+
     const updatedVocabProgress: VocabTaskProgress = {
       seenTerms: [...seenSet],
       masteredTerms: [...masteredSet],
+      wrongTerms: wrongQueue,
       roundsCompleted: prev.roundsCompleted + 1,
       totalCorrect: prev.totalCorrect + correct,
       totalAnswered: prev.totalAnswered + answered,
@@ -287,7 +312,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       totalXP: u.stats.totalXP + xp,
       streakDays: Math.max(u.stats.streakDays, streak),
       wordsLearned: u.stats.wordsLearned + newlyMastered.length,
-      vocabTaskWords: u.stats.vocabTaskWords + masteredTerms.length,
+      vocabTaskWords: u.stats.vocabTaskWords + newlyMastered.length,
       languagesStudied: u.targetLanguages.length,
     };
 

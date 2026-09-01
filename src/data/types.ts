@@ -134,6 +134,8 @@ export interface VocabTaskProgress {
   masteredTerms: string[];
   /** 已学过（看过卡片）的单词 term 集合 */
   seenTerms: string[];
+  /** 测验答错的单词 term 队列（下一轮优先考察） */
+  wrongTerms: string[];
   /** 累计完成任务轮次 */
   roundsCompleted: number;
   /** 累计答对题数 */

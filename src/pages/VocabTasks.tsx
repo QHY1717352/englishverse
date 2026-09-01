@@ -14,21 +14,27 @@ type Level = 'senior' | 'cet4';
 
 type Stage =
   | { kind: 'select' }
-  | { kind: 'card'; index: number }
-  | { kind: 'quiz'; index: number; pickedCorrect: boolean | null }
+  | { kind: 'memo'; index: number }
+  | { kind: 'quiz'; index: number }
   | { kind: 'result'; correct: number; newlyUnlocked: string[] };
 
 const ROUND_SIZE = 20;
 const TTS_LANG = 'en-US';
 
-/** 选词策略：优先未掌握，不足则用已掌握的复习词补足 */
+/** 选词策略：优先上次答错的词，其次未掌握，最后用已掌握词复习补足 */
 function pickBatch(all: VocabEntry[], progress: VocabTaskProgress, size: number): VocabEntry[] {
+  const byTerm = new Map(all.map((w) => [w.term, w]));
+  const wrongTerms = new Set(progress.wrongTerms ?? []);
   const masteredSet = new Set(progress.masteredTerms);
-  const unmastered = all.filter((w) => !masteredSet.has(w.term));
-  const mastered = all.filter((w) => masteredSet.has(w.term));
-  const shuffle = <T,>(arr: T[]) => [...arr].sort(() => Math.random() - 0.5);
 
-  const pool = [...shuffle(unmastered), ...shuffle(mastered)];
+  const wrong: VocabEntry[] = [...wrongTerms]
+    .filter((t) => byTerm.has(t))
+    .map((t) => byTerm.get(t)!);
+  const unmastered = all.filter((w) => !wrongTerms.has(w.term) && !masteredSet.has(w.term));
+  const mastered = all.filter((w) => masteredSet.has(w.term) && !wrongTerms.has(w.term));
+
+  const shuffle = <T,>(arr: T[]) => [...arr].sort(() => Math.random() - 0.5);
+  const pool = [...shuffle(wrong), ...shuffle(unmastered), ...shuffle(mastered)];
   return pool.slice(0, Math.min(size, pool.length));
 }
 
@@ -64,6 +70,7 @@ export function VocabTasks() {
   const [batch, setBatch] = useState<VocabEntry[]>([]);
   const [correct, setCorrect] = useState(0);
   const [masteredThisRound, setMasteredThisRound] = useState<string[]>([]);
+  const [wrongThisRound, setWrongThisRound] = useState<string[]>([]);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => () => stopSpeaking(), []);
@@ -78,26 +85,31 @@ export function VocabTasks() {
     setBatch(picked);
     setCorrect(0);
     setMasteredThisRound([]);
-    setStage({ kind: 'card', index: 0 });
+    setWrongThisRound([]);
+    setStage({ kind: 'memo', index: 0 });
   };
 
+  /** 测验答题：更新对错记录，直到 20 题全部答完才汇总提交 */
   const onQuizAnswer = (index: number, ok: boolean) => {
     const word = batch[index];
     const newCorrect = correct + (ok ? 1 : 0);
     const newMastered = ok ? [...masteredThisRound, word.term] : masteredThisRound;
+    const newWrong = ok ? wrongThisRound : [...wrongThisRound, word.term];
     setCorrect(newCorrect);
     setMasteredThisRound(newMastered);
+    setWrongThisRound(newWrong);
 
     if (index + 1 < batch.length) {
-      setStage({ kind: 'card', index: index + 1 });
+      setStage({ kind: 'quiz', index: index + 1 });
     } else {
-      // 完成本轮
+      // 20 题全部答完，汇总提交本轮结果
       const seenTerms = batch.map((w) => w.term);
       const xp = 10 + newCorrect * 2; // 基础 10 + 每答对一题 2
       const res = completeVocabTaskRound({
         level,
         seenTerms,
         masteredTerms: newMastered,
+        wrongTerms: newWrong,
         correct: newCorrect,
         answered: batch.length,
         xp,
@@ -119,7 +131,7 @@ export function VocabTasks() {
       <div className="max-w-3xl mx-auto px-4 py-6">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-extrabold text-ink-900">✍️ 单词任务</h1>
-          <p className="text-ink-600 mt-1 text-sm">每次 {ROUND_SIZE} 词，逐个任务化记忆，掌握高考与四级全量词汇</p>
+          <p className="text-ink-600 mt-1 text-sm">每次 {ROUND_SIZE} 词一组：先集中记忆，再测验词义，答错的词下轮再考</p>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
@@ -148,6 +160,10 @@ export function VocabTasks() {
                   <div className="flex justify-between">
                     <span className="text-ink-600">已学过</span>
                     <span className="font-bold text-brand-600">{p.seenTerms.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-ink-600">待复习错词</span>
+                    <span className="font-bold text-rose-500">{(p.wrongTerms ?? []).length}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-ink-600">完成轮次</span>
@@ -182,11 +198,12 @@ export function VocabTasks() {
         </div>
 
         <div className="card p-4 mt-4 bg-brand-50/40 border-brand-100">
-          <div className="text-sm font-bold text-brand-700">💡 学习说明</div>
+          <div className="text-sm font-bold text-brand-700">💡 学习流程</div>
           <ul className="text-xs text-ink-700 mt-2 space-y-1 list-disc list-inside">
-            <li>每轮自动抽取 {ROUND_SIZE} 个单词，优先推送你还未掌握的词。</li>
-            <li>每个单词作为一个任务：先看卡片（音标/词性/释义/例句），再做选择测验。</li>
-            <li>测验答对即记为「已掌握」，答错可在下轮自动复习。</li>
+            <li>每轮 {ROUND_SIZE} 个单词一组：先集中浏览记忆（音标/词性/释义/例句），点「我已记住」逐个看完。</li>
+            <li>看完后对这 {ROUND_SIZE} 个单词集中测验词义，检验记忆准确率。</li>
+            <li>测验答对的词记为「已掌握」；答错的词会自动放进下一轮的 20 个单词中再次考察。</li>
+            <li>每轮优先推送：①上次答错的词 ②还没学过的词，记忆更高效。</li>
             <li>完成每轮可获得 XP，并触发成就解锁。</li>
           </ul>
         </div>
@@ -194,13 +211,13 @@ export function VocabTasks() {
     );
   }
 
-  // ============ 学习中（卡片/测验） ============
-  if (stage.kind === 'card' || stage.kind === 'quiz') {
+  // ============ 学习中（记忆 / 测验） ============
+  if (stage.kind === 'memo' || stage.kind === 'quiz') {
     const index = stage.index;
     const word = batch[index];
     const totalSteps = batch.length;
-    // 每个任务 = 卡片(1) + 测验(1)，共 2*totalSteps 步
-    const currentStep = index * 2 + (stage.kind === 'card' ? 1 : 2);
+    // 前 20 步记忆浏览，后 20 步测验
+    const currentStep = stage.kind === 'memo' ? index + 1 : totalSteps + index + 1;
     const progressPct = Math.round((currentStep / (totalSteps * 2)) * 100);
 
     return (
@@ -217,18 +234,25 @@ export function VocabTasks() {
             </button>
             <ProgressBar value={progressPct} className="flex-1" />
             <span className="text-xs text-ink-600 tabular-nums">
-              任务 {index + 1}/{totalSteps}
+              {stage.kind === 'memo' ? '记忆' : '测验'} {index + 1}/{totalSteps}
             </span>
           </div>
         </div>
 
         <div className="flex-1 max-w-2xl w-full mx-auto px-4 py-6">
-          {stage.kind === 'card' ? (
-            <CardStage
+          {stage.kind === 'memo' ? (
+            <MemoStage
               word={word}
               index={index}
               total={totalSteps}
-              onNext={() => setStage({ kind: 'quiz', index, pickedCorrect: null })}
+              onNext={() => {
+                if (index + 1 < totalSteps) {
+                  setStage({ kind: 'memo', index: index + 1 });
+                } else {
+                  // 20 词浏览完毕，进入集中测验
+                  setStage({ kind: 'quiz', index: 0 });
+                }
+              }}
             />
           ) : (
             <QuizStage
@@ -253,6 +277,7 @@ export function VocabTasks() {
           correct={stage.correct}
           total={batch.length}
           newlyMastered={masteredThisRound}
+          wrongTerms={wrongThisRound}
           newlyUnlocked={stage.newlyUnlocked}
           onAgain={() => startRound(level)}
           onBack={backToSelect}
@@ -266,8 +291,8 @@ export function VocabTasks() {
   return null;
 }
 
-// ============ 单词卡片 ============
-function CardStage({
+// ============ 记忆浏览卡片 ============
+function MemoStage({
   word,
   index,
   total,
@@ -278,12 +303,12 @@ function CardStage({
   total: number;
   onNext: () => void;
 }) {
-  const [flipped, setFlipped] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [speakingExample, setSpeakingExample] = useState(false);
 
   useEffect(() => {
-    setFlipped(false);
+    setSpeaking(false);
+    setSpeakingExample(false);
   }, [word.term]);
 
   const play = () => {
@@ -292,8 +317,7 @@ function CardStage({
     speak(word.term, { lang: TTS_LANG, onEnd: () => setSpeaking(false) });
   };
 
-  const playExample = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const playExample = () => {
     if (!speechSupported() || !word.example) return;
     setSpeakingExample(true);
     speak(word.example, { lang: TTS_LANG, rate: 0.9, onEnd: () => setSpeakingExample(false) });
@@ -302,12 +326,10 @@ function CardStage({
   return (
     <div className="text-center">
       <div className="text-xs text-ink-600 mb-3">
-        第 {index + 1} / {total} 个单词 · 看卡片学习
+        记忆 {index + 1} / {total} · 用心记住每个词
       </div>
-      <button
-        onClick={() => setFlipped((f) => !f)}
-        className="w-full max-w-md mx-auto card p-8 min-h-[280px] flex flex-col items-center justify-center cursor-pointer hover:shadow-card transition"
-      >
+
+      <div className="w-full max-w-md mx-auto card p-8 min-h-[280px] flex flex-col items-center justify-center">
         <div className="flex items-center gap-2">
           <div className="text-3xl font-extrabold text-ink-900">{word.term}</div>
           {word.pos && (
@@ -316,40 +338,38 @@ function CardStage({
         </div>
         {word.phonetic && <div className="text-sm text-brand-600 mt-1 font-mono">{word.phonetic}</div>}
 
-        {flipped ? (
-          <div className="mt-4 animate-pop w-full">
-            <div className="text-xl font-bold text-accent-600">{word.meaning}</div>
-            {word.example && (
-              <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 text-left">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-ink-600">📖 句子阅读</span>
-                  <button
-                    onClick={playExample}
-                    disabled={!speechSupported()}
-                    className="text-xs text-brand-600 hover:text-brand-700 font-medium disabled:opacity-40"
-                  >
-                    {speakingExample ? '🔊 朗读中…' : '🔊 朗读例句'}
-                  </button>
-                </div>
-                <div className="text-sm font-medium text-ink-900 italic">"{word.example}"</div>
-                <div className="text-xs text-ink-600 mt-1">{word.exampleMeaning}</div>
+        <div className="mt-4 w-full">
+          <div className="text-xl font-bold text-accent-600">{word.meaning}</div>
+          {word.example && (
+            <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 text-left">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-ink-600">📖 句子阅读</span>
+                <button
+                  onClick={playExample}
+                  disabled={!speechSupported()}
+                  className="text-xs text-brand-600 hover:text-brand-700 font-medium disabled:opacity-40"
+                >
+                  {speakingExample ? '🔊 朗读中…' : '🔊 朗读例句'}
+                </button>
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="mt-4 text-xs text-ink-600">点击卡片查看释义与例句</div>
-        )}
-      </button>
+              <div className="text-sm font-medium text-ink-900 italic">"{word.example}"</div>
+              {word.exampleMeaning && <div className="text-xs text-ink-600 mt-1">{word.exampleMeaning}</div>}
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="flex justify-center gap-3 mt-5">
         <button onClick={play} disabled={!speechSupported()} className="btn-ghost">
           {speaking ? '🔊 朗读中…' : '🔊 朗读单词'}
         </button>
         <button onClick={onNext} className="btn-primary px-8">
-          我记住了，来测验 →
+          {index + 1 < total ? '我已记住，下一个 →' : '开始测验 →'}
         </button>
       </div>
-      <div className="text-xs text-ink-600 mt-3">提示：多听几遍读音，结合例句理解用法</div>
+      <div className="text-xs text-ink-600 mt-3">
+        提示：读一遍单词、释义和例句，点击按钮进入下一个，全部看完后开始测验
+      </div>
     </div>
   );
 }
@@ -428,7 +448,7 @@ function QuizStage({
       )}
       {picked && (
         <button onClick={() => onAnswer(pickedOk)} className="btn-primary mt-5 w-full">
-          {index + 1 < total ? '下一个单词 →' : '完成本轮'}
+          {index + 1 < total ? '下一题 →' : '查看成绩'}
         </button>
       )}
     </div>
@@ -440,6 +460,7 @@ function ResultStage({
   correct,
   total,
   newlyMastered,
+  wrongTerms,
   newlyUnlocked,
   onAgain,
   onBack,
@@ -448,6 +469,7 @@ function ResultStage({
   correct: number;
   total: number;
   newlyMastered: string[];
+  wrongTerms: string[];
   newlyUnlocked: string[];
   onAgain: () => void;
   onBack: () => void;
@@ -487,7 +509,7 @@ function ResultStage({
       </div>
 
       <div className="card p-4 mt-5 text-left">
-        <div className="text-sm font-bold text-ink-900">✍️ 本轮新掌握 {newlyMastered.length} 词</div>
+        <div className="text-sm font-bold text-ink-900">✍️ 本轮掌握 {newlyMastered.length} 词</div>
         {newlyMastered.length > 0 ? (
           <div className="flex flex-wrap gap-1.5 mt-2">
             {newlyMastered.map((t) => (
@@ -496,6 +518,19 @@ function ResultStage({
           </div>
         ) : (
           <div className="text-xs text-ink-600 mt-2">本轮没有新掌握的单词，多为复习，继续加油！</div>
+        )}
+      </div>
+
+      <div className="card p-4 mt-4 text-left border-rose-100">
+        <div className="text-sm font-bold text-ink-900">📌 本轮答错 {wrongTerms.length} 词（已放入下轮考察）</div>
+        {wrongTerms.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {wrongTerms.map((t) => (
+              <span key={t} className="chip bg-rose-50 text-rose-600 text-xs">{t}</span>
+            ))}
+          </div>
+        ) : (
+          <div className="text-xs text-emerald-600 mt-2">全对！这组词已全部掌握 🎉</div>
         )}
       </div>
 
